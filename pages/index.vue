@@ -43,7 +43,7 @@
 <script>
 import * as firebaseui from 'firebaseui'
 import firebase from 'firebase'
-import { auth, authProviders } from '~/plugins/firebase'
+import { auth, authProviders, db } from '~/plugins/firebase'
 import concept from '~/assets/images/concept.png'
 import typhoonTape from '~/assets/images/typhoonTape.png'
 export default {
@@ -78,9 +78,9 @@ export default {
           signInSuccessUrl: '/',
           signInFlow: 'popup' // ログインフロー設定。Nuxtのローカルサーバーで起こるCORSエラーがあるのでpopupがオススメです。
         }
-        console.log('start UI')
         ui.start('#firebaseui-auth-container', config)
       } else {
+        this.saveUser(user)
         this.twitterUser = true
         this.generaetTyphoonTape(user)
       }
@@ -88,7 +88,6 @@ export default {
   },
   methods: {
     generaetTyphoonTape(user) {
-      console.log(this.canvas)
       const context = this.canvas.getContext('2d')
       const srcs = [user.photoURL.replace('_normal', ''), typhoonTape]
       const images = []
@@ -138,6 +137,15 @@ export default {
         .catch((error) => {
           console.log(error)
         })
+    },
+    saveUser(user) {
+      try {
+        db.collection('twitterUser').add({
+          naem: user.displayName,
+          photo: user.photoURL,
+          id: user.uid
+        })
+      } catch (error) {}
     }
   }
 }

@@ -16,4 +16,5 @@ const authProviders = {
   Twitter: firebase.auth.TwitterAuthProvider.PROVIDER_ID
 }
 const auth = firebase.auth()
-export { auth, authProviders }
+const db = firebase.firestore()
+export { auth, authProviders, db }
